@@ -9,29 +9,40 @@ public class ts {
 }
 
 class Solution {
-    List<List<Integer>> result = new ArrayList<>();
-    LinkedList<Integer> path = new LinkedList<>();
-    int sum = 0;
-    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
-        Arrays.sort(candidates);
-        backTracing(candidates, target, 0);
+    List<String> result = new ArrayList<>();
+    StringBuilder ip = new StringBuilder();
+    int num = 0;
+    public List<String> restoreIpAddresses(String s) {
+        if (s.length() > 12){
+            return result;
+        }
+        backTracing(s, 0);
         return result;
     }
 
-    public void backTracing(int[] candidates, int target, int startIndex){
-        if (sum == target){
-            result.add(new ArrayList<>(path));
+    public void backTracing(String s, int startIndex){
+        if (num == 4 && startIndex == s.length()){
+            result.add(ip + "");
             return;
         }
-        for (int i = startIndex; i < candidates.length && sum + candidates[i] <= target; i++) {
-            if (i > startIndex && candidates[i] == candidates[i - 1]){
+        if (num == 4){
+            return;
+        }
+        for (int i = startIndex; i < s.length() && i - startIndex < 3 && Integer.parseInt(s.substring(startIndex, i + 1)) >= 0 && Integer.parseInt(s.substring(startIndex, i + 1)) <= 255 && s.length() - startIndex - 1 <= 4 * (4 - num); i++) {
+            if (i - startIndex > 0 && s.charAt(startIndex) == '0'){
                 continue;
             }
-            path.add(candidates[i]);
-            sum += candidates[i];
-            backTracing(candidates, target, i + 1);
-            sum -= candidates[i];
-            path.removeLast();
+            ip.append(s.substring(startIndex, i + 1));
+            if (num < 3){
+                ip.append('.');
+            }
+            num++;
+            backTracing(s, i + 1);
+            num--;
+            if (num < 3){
+                ip.deleteCharAt(ip.length() - 1);
+            }
+            ip.delete(startIndex + num, i + num + 1);
         }
     }
 }
