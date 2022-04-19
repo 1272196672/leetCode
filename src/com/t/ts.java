@@ -22,16 +22,11 @@ class Solution {
     
     public void backTracing(int n, int row, char[][] chessboard){
         if (n == row){
-            ArrayList<String> path = new ArrayList<>();
-            StringBuilder stringBuilder = new StringBuilder();
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    stringBuilder.append(chessboard[i][j]);
-                }
-                path.add(stringBuilder + "");
-                stringBuilder.delete(0, stringBuilder.length());
+            LinkedList<String> list = new LinkedList<>();
+            for (char[] obj : chessboard) {
+                list.add(String.copyValueOf(obj));
             }
-            result.add(new ArrayList<>(path));
+            result.add(new ArrayList<>(list));
             return;
         }
 
