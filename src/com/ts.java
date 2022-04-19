@@ -1,17 +1,15 @@
 package com;
 
-import java.net.Socket;
-import java.sql.PreparedStatement;
 import java.util.*;
 
 public class ts {
     public static void main(String[] args) {
-        List<Integer> lst = new ArrayList<>();
-        lst.add(3);
-        lst.add(2);
-        lst.add(1);
-        System.out.println(lst.get(1));
+        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.add("BDHS");
+        arrayList.add("KFHS");
+        arrayList.add("ABFL");
+        arrayList.add("ZLDI");
+        arrayList.sort(Comparator.comparing(String::toString));
+        System.out.println(arrayList);
     }
 }
-
-
