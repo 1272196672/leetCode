@@ -9,52 +9,52 @@ public class ts {
 }
 
 class Solution {
-    List<List<String>> result = new ArrayList<>();
-    char[][] chessboard;
-    public List<List<String>> solveNQueens(int n) {
-        chessboard = new char[n][n];
-        for (int i = 0; i < chessboard.length; i++) {
-            Arrays.fill(chessboard[i], '.');
-        }
-        backTracing(n, 0, chessboard);
-        return result;
-    }
-    
-    public void backTracing(int n, int row, char[][] chessboard){
-        if (n == row){
-            LinkedList<String> list = new LinkedList<>();
-            for (char[] obj : chessboard) {
-                list.add(String.copyValueOf(obj));
-            }
-            result.add(new ArrayList<>(list));
-            return;
-        }
-
-        for (int col = 0; col < n; col++) {
-            if (isValid(row, col, n, chessboard)){
-                chessboard[row][col] = 'Q';
-                backTracing(n, row + 1, chessboard);
-                chessboard[row][col] = '.';
-            }
-        }
+    public void solveSudoku(char[][] board) {
+        backtracking(board);
     }
 
-    public boolean isValid(int row, int col, int n, char[][] chessboard){
-        for (int i = 0; i < row; i++) {
-            if (chessboard[i][col] == 'Q'){
+    public boolean backtracking(char[][] board){
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (board[i][j] != '.'){
+                    continue;
+                }
+                for (char k = '1'; k <= '9'; k++) {
+                    if (isValid(i, j, k, board)){
+                        board[i][j] = k;
+                        if (backtracking(board)){
+                            return true;
+                        }
+                        board[i][j] = '.';
+                    }
+                }
                 return false;
             }
         }
+        return true;
+    }
 
-        for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
-            if (chessboard[i][j] == 'Q'){
+    public boolean isValid(int row, int col, int val, char[][] board){
+        //行有效
+        for (int i = row, j = 0; j < 9; j++) {
+            if (val == board[i][j]){
                 return false;
             }
         }
-
-        for (int i = row - 1, j = col + 1; i >= 0 && j < n ; i--, j++) {
-            if (chessboard[i][j] == 'Q'){
+        //列有效
+        for (int i = 0, j = col; i < 9; i++) {
+            if (val == board[i][j]){
                 return false;
+            }
+        }
+        //9宫格有效
+        int startRow = row/3 * 3;
+        int startCol = col/3 * 3;
+        for (int i = startRow; i < startRow + 3; i++) {
+            for (int j = startCol; j < startCol + 3; j++) {
+                if (val == board[i][j]){
+                    return false;
+                }
             }
         }
         return true;
