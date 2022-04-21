@@ -9,21 +9,34 @@ public class ts {
 }
 
 class Solution {
-    public List<Integer> partitionLabels(String s) {
-        int[] rightEdge = new int[26];
-        for (int i = 0; i < s.length(); i++) {
-            rightEdge[s.charAt(i) - 'a'] = i;
-        }
-        List<Integer> result = new ArrayList<>();
-        int edge = 0;
-        int preEdge = -1;
-        for (int i = 0; i < s.length(); i++) {
-            edge = Math.max(rightEdge[s.charAt(i) - 'a'], edge);
-            if (i == edge){
-                result.add(edge - preEdge);
-                preEdge = edge;
-            }
+    int result = 0;
+    public int minCameraCover(TreeNode root) {
+        if (traversal(root) == 0){
+            result++;
         }
         return result;
+    }
+    public int traversal(TreeNode root){
+
+        if (root == null){
+            return 2;
+        }
+
+        int left = traversal(root.left);
+        int right = traversal(root.right);
+
+        if (left == 2 && right == 2){
+            return 0;
+        }
+
+        if (left == 0 || right == 0){
+            result++;
+            return 1;
+        }
+
+        if (left == 1 || right == 1){
+            return 2;
+        }
+        return 0;
     }
 }
