@@ -9,54 +9,21 @@ public class ts {
 }
 
 class Solution {
-    public void solveSudoku(char[][] board) {
-        backtracking(board);
-    }
-
-    public boolean backtracking(char[][] board){
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                if (board[i][j] != '.'){
-                    continue;
-                }
-                for (char k = '1'; k <= '9'; k++) {
-                    if (isValid(i, j, k, board)){
-                        board[i][j] = k;
-                        if (backtracking(board)){
-                            return true;
-                        }
-                        board[i][j] = '.';
-                    }
-                }
-                return false;
+    public List<Integer> partitionLabels(String s) {
+        int[] rightEdge = new int[26];
+        for (int i = 0; i < s.length(); i++) {
+            rightEdge[s.charAt(i) - 'a'] = i;
+        }
+        List<Integer> result = new ArrayList<>();
+        int edge = 0;
+        int preEdge = -1;
+        for (int i = 0; i < s.length(); i++) {
+            edge = Math.max(rightEdge[s.charAt(i) - 'a'], edge);
+            if (i == edge){
+                result.add(edge - preEdge);
+                preEdge = edge;
             }
         }
-        return true;
-    }
-
-    public boolean isValid(int row, int col, int val, char[][] board){
-        //行有效
-        for (int i = row, j = 0; j < 9; j++) {
-            if (val == board[i][j]){
-                return false;
-            }
-        }
-        //列有效
-        for (int i = 0, j = col; i < 9; i++) {
-            if (val == board[i][j]){
-                return false;
-            }
-        }
-        //9宫格有效
-        int startRow = row/3 * 3;
-        int startCol = col/3 * 3;
-        for (int i = startRow; i < startRow + 3; i++) {
-            for (int j = startCol; j < startCol + 3; j++) {
-                if (val == board[i][j]){
-                    return false;
-                }
-            }
-        }
-        return true;
+        return result;
     }
 }
