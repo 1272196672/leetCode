@@ -9,34 +9,15 @@ public class ts {
 }
 
 class Solution {
-    int result = 0;
-    public int minCameraCover(TreeNode root) {
-        if (traversal(root) == 0){
-            result++;
+    public int integerBreak(int n) {
+        int[] dp = new int[n + 1];
+        dp[1] = 1;
+        dp[2] = 1;
+        for (int i = 3; i <= n; i++) {
+            for (int j = 1; j < i - 1; j++) {
+                dp[i] = Math.max(dp[i], Math.max(dp[i - j] * j, (i - j) * j));
+            }
         }
-        return result;
-    }
-    public int traversal(TreeNode root){
-
-        if (root == null){
-            return 2;
-        }
-
-        int left = traversal(root.left);
-        int right = traversal(root.right);
-
-        if (left == 2 && right == 2){
-            return 0;
-        }
-
-        if (left == 0 || right == 0){
-            result++;
-            return 1;
-        }
-
-        if (left == 1 || right == 1){
-            return 2;
-        }
-        return 0;
+        return dp[n];
     }
 }
