@@ -9,24 +9,19 @@ public class ts {
 }
 
 class Solution {
-    public int maxProfit(int k, int[] prices) {
-        if (prices.length <= 1 || k == 0) {
-            return 0;
-        }
-        //第k次持有（1）不持有（0）股票
-        int[][] dp = new int[k + 1][2];
-        //赋初值，第一个股票完成k次交易
-        for (int i = 1; i <= k; i++) {
-            dp[i][1] = -prices[0];
-        }
-        //遍历所有股票
+    public int maxProfit(int[] prices) {
+        //int[持有否][冻结否]
+        int[][] dp = new int[2][2];
+        dp[1][0] = -prices[0];
         for (int i = 1; i < prices.length; i++) {
-            //将第1~k次交易情况全部列出
-            for (int j = 1; j <= k; j++) {
-                dp[j][1] = Math.max(dp[j][1], dp[j - 1][0] - prices[i]);
-                dp[j][0] = Math.max(dp[j][0], dp[j][1] + prices[i]);
-            }
+            //以下情况需按正常逻辑情况列出！！！
+            //今天持有股票非冻结，昨天不持有不冻结不买入，或者，昨天不持有不冻结且买入股票
+            dp[1][0] = Math.max(dp[1][0], dp[0][0] - prices[i]);
+            //今天不持股不冻结，昨天可能不持股不冻结，还可能昨天不持股冻结
+            dp[0][0] = Math.max(dp[0][0], dp[0][1]);
+            //今天被冻结，昨天一定是持股非冻结且卖出了股票
+            dp[0][1] = dp[1][0] + prices[i];
         }
-        return dp[k][0];
+        return Math.max(dp[0][0], dp[0][1]);
     }
 }
