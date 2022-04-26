@@ -9,24 +9,24 @@ public class ts {
 }
 
 class Solution {
-    public int findTargetSumWays(int[] nums, int target) {
-        int sum = 0;
-        for (int num : nums) {
-            sum += num;
-        }
-        if ((sum + target) % 2 != 0 || Math.abs(target) > sum){
+    public int maxProfit(int k, int[] prices) {
+        if (prices.length <= 1 || k == 0) {
             return 0;
         }
-        int backWeight = (sum + target) / 2;
-        int[] dp = new int[backWeight + 1];
-        dp[0] = 1;
-
-        for (int i = 0; i < nums.length; i++) {
-            //走下面的for则是能放进去，本身方法数量加上重量减去此num的数量
-            for (int j = backWeight; j >= nums[i]; j--) {
-                dp[j] += dp[j - nums[i]];
+        //第k次持有（1）不持有（0）股票
+        int[][] dp = new int[k + 1][2];
+        //赋初值，第一个股票完成k次交易
+        for (int i = 1; i <= k; i++) {
+            dp[i][1] = -prices[0];
+        }
+        //遍历所有股票
+        for (int i = 1; i < prices.length; i++) {
+            //将第1~k次交易情况全部列出
+            for (int j = 1; j <= k; j++) {
+                dp[j][1] = Math.max(dp[j][1], dp[j - 1][0] - prices[i]);
+                dp[j][0] = Math.max(dp[j][0], dp[j][1] + prices[i]);
             }
         }
-        return dp[backWeight];
+        return dp[k][0];
     }
 }
