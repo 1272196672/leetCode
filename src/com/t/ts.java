@@ -8,20 +8,39 @@ public class ts {
     }
 }
 
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
 class Solution {
-    public int maxProfit(int[] prices) {
-        //int[持有否][冻结否]
-        int[][] dp = new int[2][2];
-        dp[1][0] = -prices[0];
-        for (int i = 1; i < prices.length; i++) {
-            //以下情况需按正常逻辑情况列出！！！
-            //今天持有股票非冻结，昨天不持有不冻结不买入，或者，昨天不持有不冻结且买入股票
-            dp[1][0] = Math.max(dp[1][0], dp[0][0] - prices[i]);
-            //今天不持股不冻结，昨天可能不持股不冻结，还可能昨天不持股冻结
-            dp[0][0] = Math.max(dp[0][0], dp[0][1]);
-            //今天被冻结，昨天一定是持股非冻结且卖出了股票
-            dp[0][1] = dp[1][0] + prices[i];
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null){
+            return null;
         }
-        return Math.max(dp[0][0], dp[0][1]);
+//        找到目标，直接返回目标
+        if (root == p || root == q){
+            return root;
+        }
+        TreeNode left = lowestCommonAncestor(root.left, p, q);
+        TreeNode right = lowestCommonAncestor(root.right, p, q);
+//        左边右边都找到目标了，说明自身是祖先节点，返回
+        if (left != null && right != null){
+            return root;
+        }
+//        左边没找到，右边找到了，返回右边继续寻找。或者已经找到了，目的是返回根节点
+        else if (left == null && right != null){
+            return right;
+        }
+//        同理
+        else if (left != null && right == null){
+            return left;
+        }
+//        没找到，返回空
+        return null;
     }
 }
