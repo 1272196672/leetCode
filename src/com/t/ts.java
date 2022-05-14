@@ -8,39 +8,51 @@ public class ts {
     }
 }
 
-/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode(int x) { val = x; }
- * }
- */
 class Solution {
-    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        if (root == null){
-            return null;
+    boolean[] used;
+    public boolean canPartitionKSubsets(int[] nums, int k) {
+        int sum = 0;
+        for (int i : nums) {
+            sum += i;
         }
-//        找到目标，直接返回目标
-        if (root == p || root == q){
-            return root;
+        if (sum % k != 0){
+            return false;
         }
-        TreeNode left = lowestCommonAncestor(root.left, p, q);
-        TreeNode right = lowestCommonAncestor(root.right, p, q);
-//        左边右边都找到目标了，说明自身是祖先节点，返回
-        if (left != null && right != null){
-            return root;
+        int target = sum / k;
+        Arrays.sort(nums);
+        used = new boolean[nums.length];
+        return backtracking(nums, 0, k, target, nums.length - 1);
+    }
+
+    public boolean backtracking(int[] nums, int sum, int k, int target, int startIndex){
+//        k个背包都装满了
+        if (k == 0){
+            return true;
         }
-//        左边没找到，右边找到了，返回右边继续寻找。或者已经找到了，目的是返回根节点
-        else if (left == null && right != null){
-            return right;
+//        当前的背包满了，切换下一个背包，从头开始遍历物品，背包少一个
+        if (sum == target){
+            return backtracking(nums, 0, k - 1, target, nums.length - 1);
         }
-//        同理
-        else if (left != null && right == null){
-            return left;
+//        从大到小遍历物品
+        for (int i = startIndex; i >= 0; i--) {
+//            树枝去重
+            if (used[i]){
+                continue;
+            }
+//            sum大于target，跳过
+            if (sum + nums[i] > target){
+                continue;
+            }
+//            数层去重
+            if (i < nums.length - 2 && nums[i] == nums[i + 1] && !used[i + 1]){
+                continue;
+            }
+            used[i] = true;
+            if (backtracking(nums, sum + nums[i], k, target, i - 1)){
+                return true;
+            }
+            used[i] = false;
         }
-//        没找到，返回空
-        return null;
+        return false;
     }
 }
