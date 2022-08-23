@@ -9,27 +9,33 @@ public class ts {
 }
 
 class Solution {
-    public boolean canVisitAllRooms(List<List<Integer>> rooms) {
-        ArrayList<Boolean> visited = new ArrayList<>(){{
-            for (int i = 0; i < rooms.size(); i++) {
-                add(false);
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        HashSet<String> wordSet = new HashSet<>(wordList);
+        if (!wordSet.contains(endWord)){
+            return 0;
+        }
+        ArrayDeque<String> queue = new ArrayDeque<>();
+        HashMap<String, Integer> map = new HashMap<>();
+        map.put(beginWord, 1);
+        queue.add(beginWord);
+        while (!queue.isEmpty()){
+            String nowWord = queue.poll();
+            int len = map.get(nowWord);
+            for (int i = 0; i < nowWord.length(); i++) {
+                char[] chars = nowWord.toCharArray();
+                for (char j = 'a'; j <= 'z'; j++) {
+                    chars[i] = j;
+                    String newWord = String.valueOf(chars);
+                    if (newWord.equals(endWord)){
+                        return len + 1;
+                    }
+                    if (wordSet.contains(newWord) && !map.containsKey(newWord)){
+                        map.put(newWord, len + 1);
+                        queue.offer(newWord);
+                    }
+                }
             }
-        }};
-        backtracking(0, rooms, visited);
-        for (Boolean aBoolean : visited) {
-            if (!aBoolean){
-                return false;
-            }
         }
-        return true;
-    }
-    void backtracking(int key, List<List<Integer>> rooms, ArrayList<Boolean> visited){
-        if (visited.get(key)){
-            return;
-        }
-        visited.set(key, true);
-        for (Integer integer : rooms.get(key)) {
-            backtracking(integer, rooms, visited);
-        }
+        return 0;
     }
 }
