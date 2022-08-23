@@ -9,33 +9,41 @@ public class ts {
 }
 
 class Solution {
-    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
-        HashSet<String> wordSet = new HashSet<>(wordList);
-        if (!wordSet.contains(endWord)){
-            return 0;
-        }
-        ArrayDeque<String> queue = new ArrayDeque<>();
-        HashMap<String, Integer> map = new HashMap<>();
-        map.put(beginWord, 1);
-        queue.add(beginWord);
-        while (!queue.isEmpty()){
-            String nowWord = queue.poll();
-            int len = map.get(nowWord);
-            for (int i = 0; i < nowWord.length(); i++) {
-                char[] chars = nowWord.toCharArray();
-                for (char j = 'a'; j <= 'z'; j++) {
-                    chars[i] = j;
-                    String newWord = String.valueOf(chars);
-                    if (newWord.equals(endWord)){
-                        return len + 1;
-                    }
-                    if (wordSet.contains(newWord) && !map.containsKey(newWord)){
-                        map.put(newWord, len + 1);
-                        queue.offer(newWord);
-                    }
-                }
+    int n = 1003;
+    int[] father = new int[n + 1];
+    public int[] findRedundantConnection(int[][] edges) {
+        init(father);
+        for (int[] edge : edges) {
+            if (isSameFather(edge[0], edge[1])) {
+                return edge;
             }
+            join(edge[0], edge[1]);
         }
-        return 0;
+        return new int[]{};
+    }
+
+    void init(int[] father){
+        for (int i = 0; i <= n; i++) {
+            father[i] = i;
+        }
+    }
+
+    int find(int u){
+        return u == father[u] ? u : find(father[u]);
+    }
+
+    void join(int u, int v){
+        u = find(u);
+        v = find(v);
+        if (u == v){
+            return;
+        }
+        father[v] = father[u];
+    }
+
+    boolean isSameFather(int u, int v){
+        u = find(u);
+        v = find(v);
+        return u == v;
     }
 }
