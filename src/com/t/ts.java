@@ -9,78 +9,42 @@ public class ts {
 }
 
 class Solution {
-    int n;
-    int[] father;
-    public int[] findRedundantDirectedConnection(int[][] edges) {
-        n = edges.length;
-        int[] inDegree = new int[n + 1];
-        father = new int[n + 1];
-
-        for (int i = 0; i < n; i++) {
-            inDegree[edges[i][1]] += 1;
-        }
-
-        ArrayList<Integer> errorEdge = new ArrayList<>();
-        for (int i = n - 1; i >= 0; i--) {
-            if (inDegree[edges[i][1]] == 2){
-                errorEdge.add(i);
-            }
-        }
-
-        if (!errorEdge.isEmpty()){
-            if (isTreeAfterRemoveEdge(edges, errorEdge.get(0))){
-                return edges[errorEdge.get(0)];
-            }
-            return edges[errorEdge.get(1)];
-        }
-        return getEdgeCanBeRemoved(edges);
+    Random random = new Random(System.currentTimeMillis());
+    public int[] sortArray(int[] nums) {
+        quickSort(nums, 0, nums.length - 1);
+        return nums;
     }
 
-    int[] getEdgeCanBeRemoved(int[][] edges){
-        init();
-        for (int i = 0; i < n; i++) {
-            if (isSameFather(edges[i][0], edges[i][1])){
-                return edges[i];
-            }
-            join(edges[i][0], edges[i][1]);
-        }
-        return new int[]{};
-    }
-
-    boolean isTreeAfterRemoveEdge(int[][] edges, int errorEdge){
-        init();
-        for (int i = 0; i < n; i++) {
-            if (i == errorEdge){
-                continue;
-            }
-            if (isSameFather(edges[i][0], edges[i][1])){
-                return false;
-            }
-            join(edges[i][0], edges[i][1]);
-        }
-        return true;
-    }
-
-    void init(){
-        for (int i = 0; i <= n; i++) {
-            father[i] = i;
-        }
-    }
-
-    int find(int u){
-        return u == father[u] ? u : find(father[u]);
-    }
-
-    void join(int u, int v){
-        u = find(u);
-        v = find(v);
-        if (u == v){
+    void quickSort(int[] nums, int left, int right){
+        if (left >= right){
             return;
         }
-        father[v] = u;
+
+        int pivotIndex = partition(nums, left, right);
+        quickSort(nums, left, pivotIndex - 1);
+        quickSort(nums, pivotIndex + 1, right);
     }
 
-    boolean isSameFather(int u, int v){
-        return find(u) == find(v);
+    int partition(int[] nums, int left, int right){
+        int pivotIndex = left + random.nextInt(right - left + 1);
+        swap(nums, pivotIndex, left);
+        int pivot = nums[left];
+
+//        j代表左区间最后一个元素的位置
+        int j = left;
+        for (int i = left + 1; i <= right; i++) {
+            if (nums[i] <= pivot){
+                j++;
+                swap(nums, j, i);
+            }
+        }
+        swap(nums, j, left);
+        return j;
+    }
+
+    void swap(int[] nums, int left, int right){
+        int tmp = nums[left];
+        nums[left] = nums[right];
+        nums[right] = tmp;
     }
 }
